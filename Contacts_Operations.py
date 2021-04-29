@@ -27,6 +27,7 @@ class Contact:
         self.address = address
 
 
+# @pytest.fixture
 def add_new_contact():
     contacts_file = open("contacts_file", "rb")
     is_file_empty = os.path.getsize("contacts_file") == 0
@@ -38,15 +39,18 @@ def add_new_contact():
         contact = get_contact_data()
         contacts_file = open("contacts_file", "rb+")
         contacts_list.append(contact)
-        print(contacts_list)
+        # print(contacts_list)
         pickle.dump(contacts_list, contacts_file)
         print("New Contact is added successfully")
     except KeyboardInterrupt:
         print("Contact could not be added")
+        return 1
     except EOFError:
         print("Contact could not be added")
+        return 1
     finally:
         contacts_file.close()
+        return "new_contact_added"
 
 
 def get_contact_data():
@@ -67,23 +71,27 @@ def get_contact_data():
         raise e
 
 
+# @pytest.fixture
 def show_contacts():
+    contacts_file = open("contacts_file", "rb")
     try:
-        contacts_file = open("contacts_file", "rb")
         is_file_empty = os.path.getsize("contacts_file") == 0
         if not is_file_empty:
             contacts_list = pickle.load(contacts_file)
             for contact1 in range(len(contacts_list)):
                 print()
                 print(contacts_list[contact1])
+            return "displayed"
         else:
             print("\nContacts Manager is empty\n")
-            return
-        contacts_file.close()
+            return "empty"
     except IOError:
         print("\nFile is not accessible")
+    finally:
+        contacts_file.close()
 
 
+# @pytest.fixture
 def find_contact():
     contacts_file = open("contacts_file", "rb")
     is_file_empty = os.path.getsize("contacts_file") == 0
@@ -91,19 +99,26 @@ def find_contact():
         find_name = input("\nEnter the name of the contact to search\n")
         is_contact_found = False
         contacts_list = pickle.load(contacts_file)
-        for contact1 in contacts_list:
-            contact_name = contact1.name
-            find_name = find_name.lower()
-            contact_name = contact_name.lower()
-            if contact_name == find_name:
-                print(contact1)
-                is_contact_found = True
-                break
-        if not is_contact_found:
-            print("Searched Contact not found")
+        find(contacts_list, find_name, is_contact_found)
     else:
         print("\nContacts Manager is empty. Cannot search")
+        return "empty"
     contacts_file.close()
+    return "found"
+
+
+def find(contacts_list, find_name, is_contact_found):
+    for contact1 in contacts_list:
+        contact_name = contact1.name
+        find_name = find_name.lower()
+        contact_name = contact_name.lower()
+        if contact_name == find_name:
+            print(contact1)
+            is_contact_found = True
+            break
+    if not is_contact_found:
+        print("Searched Contact not found")
+        return "not_found"
 
 
 def delete_contact():
