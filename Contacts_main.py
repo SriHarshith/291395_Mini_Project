@@ -23,4 +23,4 @@ while True:
         print("Thank You")
         exit()
     else:
-        print("\nIncorrect Option is chosen. Please enter the correct option again\n")
+        print("\nIncorrect Option is chosen. Please enter the correct option again \n")
