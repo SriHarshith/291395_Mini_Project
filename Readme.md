@@ -14,7 +14,7 @@
 - User gets a menu of 1 to Add new Contact, 
 2 to Display All Contacts, 
 3 to Delete existing Contact, 
-4 to Edit a Contact, 
+4 to Edit a Contact,
 5 to Search for existing Contact and 
 6 to Exit.
   
